@@ -9,7 +9,7 @@ const startServer = async () => {
   const app = express();
   const server = new ApolloServer({
     typeDefs: `
-            type Users {
+            type User {
                 id: ID!
                 name: String
                 email : String
@@ -23,12 +23,16 @@ const startServer = async () => {
             }
             type Query {
                 getTodos : [Todo]
+                getUsers : [User]
+                getUserById(id:ID!) : User
             }
         `,
     resolvers: {
       Query: {
         getTodos: async() => (await axios.get("https://jsonplaceholder.typicode.com/todos")).data,
-      }
+        getUsers: async() => (await axios.get("https://jsonplaceholder.typicode.com/users")).data,
+        getUserById: async(parent,{id}) => (await axios.get(`https://jsonplaceholder.typicode.com/users/${id}`)).data,
+      },
     },
   });
 
