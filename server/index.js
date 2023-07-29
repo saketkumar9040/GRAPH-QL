@@ -13,13 +13,15 @@ const startServer = async () => {
                 id: ID!
                 name: String
                 email : String
-                phone: Int,
-                website: String,
+                phone: String
+                website: String
             }
             type Todo {
                 id: ID!
                 title : String!
                 completed : Boolean
+                userId : ID
+                user : User
             }
             type Query {
                 getTodos : [Todo]
@@ -28,6 +30,9 @@ const startServer = async () => {
             }
         `,
     resolvers: {
+      Todo : {
+        user : async(todo) => (await axios.get(`https://jsonplaceholder.typicode.com/users/${todo.userId}`)).data,
+      },
       Query: {
         getTodos: async() => (await axios.get("https://jsonplaceholder.typicode.com/todos")).data,
         getUsers: async() => (await axios.get("https://jsonplaceholder.typicode.com/users")).data,
